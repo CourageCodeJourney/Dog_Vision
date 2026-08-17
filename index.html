@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🐕 See Like a Dog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fdf6e3 0%, #fef9f0 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: rgba(255, 248, 235, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 64px 64px 48px 48px;
+            padding: 40px 40px 50px;
+            box-shadow: 0 25px 60px rgba(180, 120, 70, 0.20), 0 8px 24px rgba(0, 0, 0, 0.05);
+            border: 2px solid #ffedd5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "🐾🐾🐾🐾🐾";
+            position: absolute;
+            top: -10px;
+            right: 30px;
+            font-size: 28px;
+            letter-spacing: 12px;
+            opacity: 0.08;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+            gap: 12px;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .title-group h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #6b3f2b;
+            text-shadow: 4px 4px 0 #f0d5b0;
+        }
+
+        .title-group .emoji-big {
+            font-size: 3.2rem;
+            line-height: 1;
+        }
+
+        .badge-dog {
+            background: #d9a87e;
+            color: #4d2e1b;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: 2px solid #bf8b62;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7a5a44;
+            margin-bottom: 18px;
+            padding: 12px 20px;
+            background: #f8efe4;
+            border-radius: 60px;
+            display: inline-block;
+            border: 1px solid #e6d3bd;
+        }
+
+        .subtitle strong {
+            color: #b45f3a;
+        }
+
+        .fact-strip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            color: #8a6b52;
+            margin-bottom: 24px;
+            padding: 10px 18px;
+            background: #fff9f2;
+            border: 1px dashed #e6d3bd;
+            border-radius: 20px;
+        }
+
+        .fact-strip .fact-emoji {
+            font-size: 1.1rem;
+        }
+
+        .views-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0 28px;
+        }
+
+        .view-card {
+            background: #ffffffdc;
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 18px 18px 22px;
+            box-shadow: 0 8px 28px rgba(130, 80, 40, 0.10);
+            border: 2px solid #f7e8d8;
+            transition: transform 0.15s ease;
+        }
+
+        .view-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .view-card .label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6px 12px 6px;
+        }
+
+        .view-card .label h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #4f3423;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-card .label .tag {
+            background: #efe1d1;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b4a34;
+            border: 1px solid #dcc4ae;
+        }
+
+        .canvas-wrapper {
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.03);
+            background: #e5d5c0;
+            position: relative;
+            line-height: 0;
+        }
+
+        .canvas-wrapper canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 4 / 3;
+            background: #dac9b4;
+        }
+
+        .canvas-wrapper .watermark {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 240, 0.3);
+            pointer-events: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .view-card .caption {
+            padding: 10px 6px 0;
+            font-size: 0.95rem;
+            color: #7f624b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 20px;
+            margin: 12px 0 4px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 34px;
+            border: none;
+            border-radius: 80px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: #f5e7d9;
+            color: #4d3221;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 12px rgba(140, 90, 50, 0.08);
+            border: 2px solid #e6d0bb;
+        }
+
+        .btn:hover {
+            transform: scale(0.97);
+            background: #f0ddd0;
+        }
+
+        .btn:active {
+            transform: scale(0.94);
+        }
+
+        .btn-primary {
+            background: #e6b78a;
+            border-color: #cb9a70;
+            color: #3f281b;
+            box-shadow: 0 6px 0 #b5835a, 0 8px 20px rgba(180, 110, 50, 0.15);
+        }
+
+        .btn-primary:hover {
+            background: #dfac7c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #a8724b;
+        }
+
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #a8724b;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: #d6bea8;
+            color: #6d4f3a;
+        }
+
+        .btn-outline:hover {
+            background: #f5ede6;
+        }
+
+        .btn-success {
+            background: #8fc99e;
+            border-color: #6daf7e;
+            color: #2a4d33;
+            box-shadow: 0 6px 0 #5a8f6a;
+        }
+
+        .btn-success:hover {
+            background: #7dbe8e;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #4d7a5a;
+        }
+
+        .btn .icon {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .camera-hint {
+            text-align: center;
+            font-size: 0.82rem;
+            color: #a5896f;
+            margin-bottom: 18px;
+        }
+
+        .status-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 2px dashed #e6d3bd;
+            gap: 14px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            color: #6b4f3a;
+            background: #f7eee6;
+            padding: 8px 24px 8px 20px;
+            border-radius: 60px;
+            border: 1px solid #e2cfbb;
+        }
+
+        .status-badge .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #b3b3b3;
+            transition: background 0.25s;
+        }
+
+        .status-badge .dot.active {
+            background: #63b87a;
+            box-shadow: 0 0 12px #63b87a88;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: #a5846b;
+        }
+
+        .footer-links span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* hidden file input */
+        #fileInput {
+            display: none;
+        }
+
+        .snackbar {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #4d3221;
+            color: #fef3e8;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .snackbar.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .paw-float {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.05;
+            pointer-events: none;
+            user-select: none;
+            animation: floatPaw 18s infinite alternate ease-in-out;
+        }
+
+        .paw-float:nth-child(1) {
+            top: 8%;
+            left: 3%;
+            animation-duration: 22s;
+            font-size: 3rem;
+        }
+        .paw-float:nth-child(2) {
+            bottom: 12%;
+            right: 2%;
+            animation-duration: 26s;
+            font-size: 4rem;
+            transform: rotate(20deg);
+        }
+        .paw-float:nth-child(3) {
+            top: 45%;
+            left: 90%;
+            animation-duration: 20s;
+            font-size: 2.4rem;
+        }
+
+        @keyframes floatPaw {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(-18px, 28px) rotate(12deg);
+            }
+        }
+
+        @media (max-width: 780px) {
+            .container {
+                padding: 24px 18px 30px;
+                border-radius: 40px;
+            }
+            .title-group h1 {
+                font-size: 2rem;
+            }
+            .views-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .btn {
+                padding: 14px 24px;
+                font-size: 1rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .title-group h1 {
+                font-size: 1.5rem;
+            }
+            .controls {
+                gap: 10px;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="paw-float">🐾</div>
+    <div class="paw-float">🐾</div>
+    <div class="paw-float">🐾</div>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="title-group">
+                <span class="emoji-big">🐶</span>
+                <h1>Dog Vision</h1>
+                <span class="badge-dog">🐕‍🦺 live</span>
+            </div>
+            <div style="font-size:2rem; opacity:0.2; letter-spacing:6px;">🐾</div>
+        </div>
+
+        <div class="subtitle">
+            👀 <strong>See the world</strong> through your dog's eyes · blue · yellow · gray
+        </div>
+
+        <div class="fact-strip">
+            <span class="fact-emoji">🧬</span>
+            <span>Dogs are dichromats: they only have two types of cone cells (blue and yellow-green), so reds and greens blend together — this is a stylized approximation, not a lab-accurate simulation.</span>
+        </div>
+
+        <div class="views-grid">
+            <div class="view-card">
+                <div class="label">
+                    <h2>👤 Human</h2>
+                    <span class="tag">full color</span>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="humanCanvas" width="400" height="300"></canvas>
+                    <div class="watermark">👁️</div>
+                </div>
+                <div class="caption">🌸 sharp · vibrant</div>
+            </div>
+
+            <div class="view-card">
+                <div class="label">
+                    <h2>🐕 Dog</h2>
+                    <span class="tag">simulated</span>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="dogCanvas" width="400" height="300"></canvas>
+                    <div class="watermark">🐾</div>
+                </div>
+                <div class="caption">🌿 blue · yellow · softer</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="startBtn">
+                <span class="icon">📷</span> <span id="startLabel">Start Camera</span>
+            </button>
+            <button class="btn btn-success" id="uploadBtn">
+                <span class="icon">🖼️</span> Upload Photo
+            </button>
+            <button class="btn btn-outline" id="snapshotBtn">
+                <span class="icon">💾</span> Save Comparison
+            </button>
+            <button class="btn btn-outline" id="resetBtn">
+                <span class="icon">🔄</span> Reset
+            </button>
+        </div>
+
+        <div class="camera-hint">🔒 Camera access needs HTTPS or localhost — use Upload Photo if it won't start.</div>
+
+        <input type="file" id="fileInput" accept="image/*" />
+
+        <div class="status-area">
+            <div class="status-badge">
+                <span class="dot" id="statusDot"></span>
+                <span id="statusText">Ready</span>
+            </div>
+            <div class="footer-links">
+                <span>🐾 <span id="frameCounter">0</span> frames</span>
+                <span>⚡ real‑time</span>
+                <span>🐶 #weekendchallenge</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="snackbar" id="snackbar">📸 Snapshot saved!</div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ----- DOM refs -----
+            const humanCanvas = document.getElementById('humanCanvas');
+            const dogCanvas = document.getElementById('dogCanvas');
+            const humanCtx = humanCanvas.getContext('2d');
+            const dogCtx = dogCanvas.getContext('2d');
+
+            const startBtn = document.getElementById('startBtn');
+            const startLabel = document.getElementById('startLabel');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const fileInput = document.getElementById('fileInput');
+            const snapshotBtn = document.getElementById('snapshotBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const frameCounter = document.getElementById('frameCounter');
+            const snackbar = document.getElementById('snackbar');
+
+            // ----- state -----
+            let stream = null;
+            let video = null;
+            let isRunning = false;
+            let animId = null;
+            let frameCount = 0;
+            let currentImageSource = null; // 'camera' or 'upload'
+
+            const W = 400;
+            const H = 300;
+            humanCanvas.width = W;
+            humanCanvas.height = H;
+            dogCanvas.width = W;
+            dogCanvas.height = H;
+
+            // ----- DOG VISION FILTER -----
+            // Dogs are dichromats (two cone types: short-wavelength "blue" and
+            // mid/long-wavelength "yellow-green"), which is closest in practice
+            // to human deuteranopia (red-green color blindness). We approximate
+            // that with a standard dichromacy simulation matrix rather than a
+            // simple blue/yellow threshold, which is closer to the real biology.
+            // This is still a simplification for illustrative purposes, not a
+            // scientifically calibrated model.
+            function applyDogVision(imageData) {
+                const data = imageData.data;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    // Simplified deuteranopia-style transform: collapses the
+                    // red/green axis dogs can't distinguish, while preserving
+                    // the blue-yellow axis they can.
+                    let nr = 0.625 * r + 0.375 * g;
+                    let ng = 0.7 * r + 0.3 * g;
+                    let nb = 0.3 * g + 0.7 * b;
+
+                    // Slight desaturation + gentle warm shift, since dog cone
+                    // sensitivity peaks are shifted from human peaks.
+                    const avg = (nr + ng + nb) / 3;
+                    nr = nr * 0.85 + avg * 0.15;
+                    ng = ng * 0.9 + avg * 0.1;
+                    nb = Math.min(255, nb * 1.05 + avg * 0.05);
+
+                    data[i] = nr;
+                    data[i + 1] = ng;
+                    data[i + 2] = nb;
+                }
+                return imageData;
+            }
+
+            // ----- Process any image source -----
+            // Blur is applied via the canvas 2D "filter" property at draw time
+            // (GPU-accelerated) instead of a manual per-pixel box blur, which
+            // was too slow to keep a live camera loop smooth. This approximates
+            // dogs' lower visual acuity (~20/75) without tanking frame rate.
+            function processImage(source) {
+                // Draw human view
+                humanCtx.filter = 'none';
+                humanCtx.drawImage(source, 0, 0, W, H);
+
+                // Draw dog view: soft blur baked in at draw time
+                dogCtx.filter = 'blur(1.4px)';
+                dogCtx.drawImage(source, 0, 0, W, H);
+                dogCtx.filter = 'none';
+
+                let imgData = dogCtx.getImageData(0, 0, W, H);
+                imgData = applyDogVision(imgData);
+                dogCtx.putImageData(imgData, 0, 0);
+
+                frameCount++;
+                if (frameCount % 10 === 0) {
+                    frameCounter.textContent = frameCount;
+                }
+            }
+
+            // ----- CAMERA -----
+            async function startCamera() {
+                if (isRunning) {
+                    stopCamera();
+                    return;
+                }
+
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { width: { ideal: 400 }, height: { ideal: 300 }, facingMode: 'user' },
+                        audio: false
+                    });
+
+                    video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.playsInline = true;
+                    video.muted = true;
+                    await video.play();
+
+                    isRunning = true;
+                    currentImageSource = 'camera';
+                    statusDot.className = 'dot active';
+                    statusText.textContent = 'Camera on 🐕';
+                    startLabel.textContent = 'Stop Camera';
+                    startBtn.querySelector('.icon').textContent = '⏹';
+                    frameCount = 0;
+                    frameCounter.textContent = '0';
+
+                    if (animId) cancelAnimationFrame(animId);
+
+                    function loop() {
+                        if (!isRunning || !video || video.readyState < 2) {
+                            animId = requestAnimationFrame(loop);
+                            return;
+                        }
+                        processImage(video);
+                        animId = requestAnimationFrame(loop);
+                    }
+                    loop();
+
+                    showSnackbar('🐶 Camera is live!');
+
+                } catch (err) {
+                    console.error('Camera error:', err);
+                    showSnackbar('⚠️ ' + err.message + '. Try using Live Server or localhost.');
+                    stopCamera();
+                }
+            }
+
+            function stopCamera() {
+                isRunning = false;
+                currentImageSource = null;
+                if (animId) { cancelAnimationFrame(animId);
+                    animId = null; }
+                if (stream) { stream.getTracks().forEach(t => t.stop());
+                    stream = null; }
+                if (video) { video.srcObject = null;
+                    video = null; }
+
+                humanCtx.clearRect(0, 0, W, H);
+                dogCtx.clearRect(0, 0, W, H);
+                humanCtx.fillStyle = '#dac9b4';
+                humanCtx.fillRect(0, 0, W, H);
+                humanCtx.fillStyle = '#bfaa92';
+                humanCtx.font = '18px sans-serif';
+                humanCtx.textAlign = 'center';
+                humanCtx.fillText('📷 camera off', W / 2, H / 2 + 6);
+                dogCtx.fillStyle = '#dac9b4';
+                dogCtx.fillRect(0, 0, W, H);
+                dogCtx.fillStyle = '#bfaa92';
+                dogCtx.font = '18px sans-serif';
+                dogCtx.textAlign = 'center';
+                dogCtx.fillText('🐾 waiting...', W / 2, H / 2 + 6);
+
+                statusDot.className = 'dot';
+                statusText.textContent = 'Ready';
+                startLabel.textContent = 'Start Camera';
+                startBtn.querySelector('.icon').textContent = '📷';
+                frameCounter.textContent = '0';
+                frameCount = 0;
+            }
+
+            // ----- UPLOAD PHOTO -----
+            function handleUpload(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Stop camera if running
+                        if (isRunning) stopCamera();
+
+                        // Draw the uploaded image
+                        processImage(img);
+
+                        currentImageSource = 'upload';
+                        statusDot.className = 'dot active';
+                        statusText.textContent = '📸 Photo loaded';
+                        frameCounter.textContent = '1';
+                        showSnackbar('🖼️ Photo uploaded! See the dog view.');
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // ----- SNAPSHOT (saves comparison) -----
+            function takeSnapshot() {
+                if (!currentImageSource) {
+                    showSnackbar('⚠️ No image to save. Start camera or upload a photo first!');
+                    return;
+                }
+
+                try {
+                    const combined = document.createElement('canvas');
+                    combined.width = W * 2 + 20;
+                    combined.height = H + 40;
+                    const ctx = combined.getContext('2d');
+
+                    ctx.fillStyle = '#f7eee6';
+                    ctx.fillRect(0, 0, combined.width, combined.height);
+                    ctx.fillStyle = '#4d3221';
+                    ctx.font = 'bold 18px "Segoe UI", sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🐕 Human vs Dog Vision', combined.width / 2, 28);
+
+                    ctx.drawImage(humanCanvas, 10, 40, W, H);
+                    ctx.fillStyle = '#6b4f3a';
+                    ctx.font = '14px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('👤 Human', W / 2 + 10, H + 58);
+
+                    ctx.drawImage(dogCanvas, W + 30, 40, W, H);
+                    ctx.fillText('🐕 Dog', W + 30 + W / 2, H + 58);
+
+                    const link = document.createElement('a');
+                    link.download = 'dog_vision_comparison_' + Date.now() + '.png';
+                    link.href = combined.toDataURL('image/png');
+                    link.click();
+                    showSnackbar('📸 Comparison saved!');
+                } catch (e) {
+                    showSnackbar('⚠️ Could not save snapshot');
+                    console.error(e);
+                }
+            }
+
+            // ----- RESET -----
+            function resetAll() {
+                if (isRunning) stopCamera();
+                currentImageSource = null;
+                frameCount = 0;
+                frameCounter.textContent = '0';
+                humanCtx.fillStyle = '#dac9b4';
+                humanCtx.fillRect(0, 0, W, H);
+                humanCtx.fillStyle = '#bfaa92';
+                humanCtx.font = '18px sans-serif';
+                humanCtx.textAlign = 'center';
+                humanCtx.fillText('📷 ready', W / 2, H / 2 + 6);
+                dogCtx.fillStyle = '#dac9b4';
+                dogCtx.fillRect(0, 0, W, H);
+                dogCtx.fillStyle = '#bfaa92';
+                dogCtx.font = '18px sans-serif';
+                dogCtx.textAlign = 'center';
+                dogCtx.fillText('🐾 ready', W / 2, H / 2 + 6);
+                statusDot.className = 'dot';
+                statusText.textContent = 'Ready';
+                showSnackbar('🔄 Reset complete');
+            }
+
+            // ----- SNACKBAR -----
+            let snackTimeout = null;
+
+            function showSnackbar(msg) {
+                snackbar.textContent = msg;
+                snackbar.classList.add('show');
+                clearTimeout(snackTimeout);
+                snackTimeout = setTimeout(() => {
+                    snackbar.classList.remove('show');
+                }, 2800);
+            }
+
+            // ----- EVENT LISTENERS -----
+            startBtn.addEventListener('click', startCamera);
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleUpload(e.target.files[0]);
+                }
+                fileInput.value = '';
+            });
+            snapshotBtn.addEventListener('click', takeSnapshot);
+            resetBtn.addEventListener('click', resetAll);
+
+            // ----- INIT -----
+            (function init() {
+                humanCtx.fillStyle = '#dac9b4';
+                humanCtx.fillRect(0, 0, W, H);
+                humanCtx.fillStyle = '#bfaa92';
+                humanCtx.font = '18px sans-serif';
+                humanCtx.textAlign = 'center';
+                humanCtx.fillText('📷 ready', W / 2, H / 2 + 6);
+                dogCtx.fillStyle = '#dac9b4';
+                dogCtx.fillRect(0, 0, W, H);
+                dogCtx.fillStyle = '#bfaa92';
+                dogCtx.font = '18px sans-serif';
+                dogCtx.textAlign = 'center';
+                dogCtx.fillText('🐾 ready', W / 2, H / 2 + 6);
+            })();
+
+        })();
+    </script>
+
+</body>
+</html>
